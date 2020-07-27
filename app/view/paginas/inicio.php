@@ -1,6 +1,8 @@
-<h1>Funciona Index</h1>
-<p><?php
-    print $datos['title'];
+<?php
+require RUTA_APP.'/view/inc/header.php';
 
-    ?></p>
+print '<p>'.$datos['title'].'</p>';
+
+require RUTA_APP.'/view/inc/footer.php';
+?>
 
