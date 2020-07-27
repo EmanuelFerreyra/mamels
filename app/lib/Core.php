@@ -1,9 +1,5 @@
 <?php
 
-
-namespace app\lib;
-
-
 class Core
 {
     protected $controllerCurrent = 'Paginas';
@@ -14,10 +10,16 @@ class Core
     {
         //print_r($this->getUrl());
         $url = $this->getUrl();
-        $this->lookIfTheControllerExist( $url );
+        $this->checkIfTheControllerExist( $url );
+        $this->checkIfTheMethodExist($url);
+
+        //obtener parametros
+        $this->parameter = $url ? array_values($url) : [];
+        //llamar callback con parametros array
+        call_user_func_array([$this->controllerCurrent,$this->methodCurrent],$this->parameter);
     }
 
-    public function lookIfTheControllerExist( $url ){
+    public function checkIfTheControllerExist( $url ){
         if( isset($url[0]) ){
             if( file_exists('../app/controller/'.ucwords($url[0]).'.php') ){
                 //si existe se setea como controlador por defecto
@@ -27,11 +29,21 @@ class Core
                 unset($url[0]);
             }
         }
-
         require_once '../app/controller/'.$this->controllerCurrent. '.php';
         $this->controllerCurrent = new $this->controllerCurrent;
     }
-
+    public function checkIfTheMethodExist($url){
+        //chequeamos la segunda parte de la url
+        // [recorodar que la variable url probiene del .htacess index.php?url=$1]
+        if( isset($url[1]) ){
+            if ( method_exists( $this->controllerCurrent, $url[1])) {
+                //chequemos el metodo
+                $this->methodCurrent = $url[1];
+                //unset indice
+                unset($url[1]);
+            }
+        }
+    }
     public function getUrl()
     {
         if( isset( $_GET['url']) ){

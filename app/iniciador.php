@@ -1,5 +1,6 @@
 <?php
+require_once 'config/Config.php';
 
-require_once 'lib/Base.php';
-require_once 'lib/Controller.php';
-require_once 'lib/Core.php';
+spl_autoload_register(function( $class ){
+    require_once 'lib/'.$class.'.php';
+});
